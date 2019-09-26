@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
     protected void onDestroy()
     {
         if (mSpeech != null)
+            mSpeech.stop();
             mSpeech.shutdown();
         MyApplication.getInstance().unregisterDataChangeListener(this);
         //activityList.remove(this);
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
     @Override
     public void dataChanged(String paramString, Object paramObject) {
         hint.setText( paramString);
+        mSpeech.stop();
         SpeechUtil.openAudioFile(mSpeech, paramString);
     }
 
