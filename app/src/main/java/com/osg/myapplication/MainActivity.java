@@ -23,10 +23,10 @@ import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity implements MyApplication.DataChangeListener {
 
-    //tts语音播放
-    public static TextToSpeech mSpeech = null;
     private MainHandler handler;
     private TextView hint;
+    //tts语音播放
+    public static TextToSpeech mSpeech = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,18 +34,18 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
         handler = new MainHandler(this);
         startService(new Intent( getApplicationContext(), WebService.class));
 
-        mSpeech = new TextToSpeech(getApplicationContext(), new TTSListener());
+        mSpeech = new TextToSpeech(this.getApplicationContext(), new TTSListener());
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        hint = (TextView) findViewById(R.id.ttsText);
+        /*hint = (TextView) findViewById(R.id.ttsText);
         hint.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
-                SpeechUtil.openAudioFile(MainActivity.mSpeech,"你好，欢迎光临！");
+
             }
-        });
+        });*/
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,15 +57,26 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
 
 
         MyApplication.getInstance().registerDataChangeListener(this);
+
+        final String context1 = "你好~";
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SpeechUtil.openAudioFile(mSpeech, context1);
+            }
+        }, 500 );
     }
+
 
     @Override
     protected void onDestroy()
     {
-        super.onDestroy();
+        if (mSpeech != null)
+            mSpeech.shutdown();
         MyApplication.getInstance().unregisterDataChangeListener(this);
         //activityList.remove(this);
         stopService(new Intent(getApplicationContext(), WebService.class));
+        super.onDestroy();
     }
 
     @Override

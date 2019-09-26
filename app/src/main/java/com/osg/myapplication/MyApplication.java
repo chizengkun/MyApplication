@@ -1,14 +1,15 @@
 package com.osg.myapplication;
 
 import android.app.Application;
-import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
 public class MyApplication extends Application  {
     private static MyApplication instance = null;
+
     List<DataChangeListener> dataChangeListenerList = new ArrayList();
 
     public static MyApplication getInstance()
@@ -34,10 +35,15 @@ public class MyApplication extends Application  {
     public void onCreate()
     {
         super.onCreate();
+
         instance = this;
-        // CrashHandler.getInstance().init(getApplicationContext());
-        //initialEnv();
-        //initialTts();
+        initTts();
+    }
+
+
+
+    private void initTts(){
+
     }
 
     public void unregisterDataChangeListener(DataChangeListener paramDataChangeListener)
