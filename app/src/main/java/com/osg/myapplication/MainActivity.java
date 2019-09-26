@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
     @Override
     public void dataChanged(String paramString, Object paramObject) {
         hint.setText( paramString);
-        //SpeechUtil.openAudioFile(mSpeech, "你好啊~");
+        SpeechUtil.openAudioFile(mSpeech, paramString);
     }
 
 
