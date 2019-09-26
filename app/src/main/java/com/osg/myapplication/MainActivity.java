@@ -1,26 +1,39 @@
 package com.osg.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.osg.myapplication.listener.TTSListener;
+import com.osg.myapplication.server.SocketService;
 import com.osg.myapplication.utils.SpeechUtil;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements MyApplication.DataChangeListener {
 
     //tts语音播放
     public static TextToSpeech mSpeech = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        startService(new Intent( getApplication(), SocketService.class));
+
         mSpeech = new TextToSpeech(getApplicationContext(), new TTSListener());
 
         setContentView(R.layout.activity_main);
@@ -40,6 +53,17 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
+        MyApplication.getInstance().registerDataChangeListener(this);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        MyApplication.getInstance().unregisterDataChangeListener(this);
+        //activityList.remove(this);
     }
 
     @Override
@@ -62,5 +86,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void dataChanged(String paramString, Object paramObject) {
+        ((EditText)findViewById(R.id.ttsText)).setText( paramString);
     }
 }
