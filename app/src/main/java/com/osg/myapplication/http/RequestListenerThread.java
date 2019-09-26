@@ -1,6 +1,21 @@
 package com.osg.myapplication.http;
 
+import com.osg.myapplication.utils.Constant;
+
+import org.apache.http.impl.DefaultConnectionReuseStrategy;
+import org.apache.http.impl.DefaultHttpResponseFactory;
+import org.apache.http.impl.DefaultHttpServerConnection;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpProcessor;
+import org.apache.http.protocol.HttpRequestHandlerRegistry;
+import org.apache.http.protocol.HttpService;
+import org.apache.http.protocol.ResponseConnControl;
+import org.apache.http.protocol.ResponseContent;
+import org.apache.http.protocol.ResponseDate;
+import org.apache.http.protocol.ResponseServer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -18,7 +33,7 @@ public class RequestListenerThread extends Thread
     private static final String tag = RequestListenerThread.class.getSimpleName();
 
     private int port;
-    private String webRoot;
+    //private String webRoot;
 
     private ServerSocket serversocket;
     private ExecutorService executorService;
@@ -26,10 +41,10 @@ public class RequestListenerThread extends Thread
     private HttpParams params;
     private HttpService httpService;
 
-    public RequestListenerThread(int port, String webRoot)
+    public RequestListenerThread(int port)
     {
         this.port = port;
-        this.webRoot = webRoot;
+        //this.webRoot = webRoot;
 
         executorService = Executors.newCachedThreadPool();
     }
@@ -99,7 +114,7 @@ public class RequestListenerThread extends Thread
             HttpRequestHandlerRegistry registry = new HttpRequestHandlerRegistry();
 
             //http请求处理程序，HttpFileHandler继承于HttpRequestHandler（http请求处理程序)
-            registry.register(Constant.Http.BROWSE, new FileBrowseHandler(webRoot));
+            registry.register(Constant.Http.BROWSE, new RequestDataChangeHandler());
 
             httpService = new HttpService(httpProcessor,
                 new DefaultConnectionReuseStrategy(), new DefaultHttpResponseFactory());

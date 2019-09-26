@@ -20,8 +20,6 @@ public class Constant
 
     public static final String ENCODING = "UTF-8";
 
-    public static int defaultPort = 23021;
-
 
     public static Hashtable theMimeTypes = new Hashtable();
     static
@@ -57,7 +55,7 @@ public class Constant
 
     public static interface Config
     {
-        public static final int PORT = 5000;
+        public static final int PORT = 23021;
         public static final String Web_Root = "/";
 
     }

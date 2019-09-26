@@ -2,37 +2,37 @@ package com.osg.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.osg.myapplication.listener.TTSListener;
-import com.osg.myapplication.server.SocketService;
+import com.osg.myapplication.service.WebService;
+import com.osg.myapplication.utils.Constant;
 import com.osg.myapplication.utils.SpeechUtil;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity implements MyApplication.DataChangeListener {
 
     //tts语音播放
     public static TextToSpeech mSpeech = null;
-
+    private MainHandler handler;
+    private TextView hint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        startService(new Intent( getApplication(), SocketService.class));
+        handler = new MainHandler(this);
+        startService(new Intent( getApplicationContext(), WebService.class));
 
         mSpeech = new TextToSpeech(getApplicationContext(), new TTSListener());
 
@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        findViewById(R.id.ttsText).setOnClickListener(new View.OnClickListener(){
+        hint = (TextView) findViewById(R.id.ttsText);
+        hint.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 SpeechUtil.openAudioFile(MainActivity.mSpeech,"你好，欢迎光临！");
             }
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
         super.onDestroy();
         MyApplication.getInstance().unregisterDataChangeListener(this);
         //activityList.remove(this);
+        stopService(new Intent(getApplicationContext(), WebService.class));
     }
 
     @Override
@@ -91,6 +93,41 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
 
     @Override
     public void dataChanged(String paramString, Object paramObject) {
-        ((EditText)findViewById(R.id.ttsText)).setText( paramString);
+        hint.setText( paramString);
+    }
+
+
+    private static class MainHandler extends Handler
+    {
+        private WeakReference<MainActivity> weakReference;
+
+        public MainHandler(MainActivity activity)
+        {
+            weakReference = new WeakReference<MainActivity>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg)
+        {
+            final MainActivity activity = weakReference.get();
+            if (activity == null)
+                return;
+
+            switch (msg.what)
+            {
+                case Constant.MSG.GET_NETWORK_ERROR :
+                    //activity.hint.setText("手机网络地址获取失败，即将退出程序");
+                    activity.handler.postDelayed(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            activity.finish();
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                        }
+                    }, 2 * 1000);
+                    break;
+            }
+        }
     }
 }
