@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
 
         MyApplication.getInstance().registerDataChangeListener(this);
 
-        final String context1 = "你好~";
+        final String context1 = "言归正传。接下来主要讲一下这段代码并说明tts实现播报在fragment和activity中的区别。\n" +
+                "要实现tts播报主要通过如下几个部分,特别长，试下关闭是否会停止语言~";
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
