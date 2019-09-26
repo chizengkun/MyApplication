@@ -17,9 +17,6 @@ import java.io.IOException;
 import java.net.URLDecoder;
 
 
-/**
- * Created by Guo.Duo duo on 2015/9/5.
- */
 public class RequestDataChangeHandler implements HttpRequestHandler
 {
     private static final String tag = RequestDataChangeHandler.class.getSimpleName();

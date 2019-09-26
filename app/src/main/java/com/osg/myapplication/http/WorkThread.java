@@ -10,9 +10,6 @@ import org.apache.http.protocol.HttpService;
 import java.io.IOException;
 
 
-/**
- * Created by Guo.Duo duo on 2015/9/5.
- */
 public class WorkThread extends Thread
 {
 
