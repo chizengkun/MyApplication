@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        handler = new MainHandler(this);
+//        handler = new MainHandler(this);
         startService(new Intent( getApplicationContext(), WebService.class));
 
         mSpeech = new TextToSpeech(this.getApplicationContext(), new TTSListener());
@@ -40,10 +40,10 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*hint = (TextView) findViewById(R.id.ttsText);
+        hint = (TextView) findViewById(R.id.ttsText);
+        /*
         hint.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
-
             }
         });*/
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
     @Override
     public void dataChanged(String paramString, Object paramObject) {
         hint.setText( paramString);
+        //SpeechUtil.openAudioFile(mSpeech, "你好啊~");
     }
 
 
