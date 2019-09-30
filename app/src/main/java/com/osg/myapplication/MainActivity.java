@@ -58,16 +58,27 @@ public class MainActivity extends AppCompatActivity implements MyApplication.Dat
 
         MyApplication.getInstance().registerDataChangeListener(this);
 
-        final String context1 = "言归正传。接下来主要讲一下这段代码并说明tts实现播报在fragment和activity中的区别。\n" +
+        // 优化，不启现场也可以，使用    onWindowFocusChanged 事件，也是可以正常播报
+       /* final String context1 = "言归正传。接下来主要讲一下这段代码并说明tts实现播报在fragment和activity中的区别。\n" +
                 "要实现tts播报主要通过如下几个部分,特别长，试下关闭是否会停止语言~";
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 SpeechUtil.openAudioFile(mSpeech, context1);
             }
-        }, 500 );
+        }, 500 );*/
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus){
+        super.onWindowFocusChanged(hasFocus);
+
+        if (hasFocus){
+            final String context1 = "言归正传。接下来主要讲一下这段代码并说明tts实现播报在fragment和activity中的区别。\n" +
+                    "要实现tts播报主要通过如下几个部分,特别长，试下关闭是否会停止语言~";
+            SpeechUtil.openAudioFile(mSpeech, context1);
+        }
+    }
 
     @Override
     protected void onDestroy()
